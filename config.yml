@@ -1,1 +1,83 @@
 apiVersion: apps/v1
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Coffee Shop Order
+  license:
+    name: Add items to cart
+servers:
+  - url: http://cool.coffee.menu.app/v1
+paths:
+  /order:
+    get:
+      summary: Add menu items to cart
+      operationId: addItems
+      tags:
+        - items
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            format: int32
+      responses:
+        'error 402':
+          description: Array of menu items
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Menu"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Added selected item to cart
+      operationId: createCart
+      tags:
+        - cart
+      responses:
+        'error 403':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /cart/{itemId}:
+    delete:
+      summary: Removing a specific item from the cart
+      operationId: showItemById
+      tags:
+        - items
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: The id of the item to retrieve
+          schema:
+            type: string
+      responses:
+        'error 404':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
