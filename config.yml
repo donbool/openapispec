@@ -17,8 +17,7 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: How many items to return at one time (max 100)
-          required: false
+          description: 
           schema:
             type: integer
             maximum: 100
@@ -28,7 +27,7 @@ paths:
           description: Array of menu items
           headers:
             x-next:
-              description: A link to the next page of responses
+              description: menu items
               schema:
                 type: string
           content:
@@ -47,6 +46,12 @@ paths:
       tags:
         - cart
       responses:
+        'Item added':
+            description: Item successfully added
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Item"
         'error 403':
           description: Null response
         default:
@@ -55,6 +60,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
   /cart/{itemId}:
     delete:
       summary: Removing a specific item from the cart
@@ -69,6 +75,12 @@ paths:
           schema:
             type: string
       responses:
+        'Deleted':
+            description: Item successfully deleted
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Item"
         'error 404':
           description: Expected response to a valid request
           content:
